@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace aoc_2020 {
+namespace AoC {
 	class Program {
 
 		private static readonly Dictionary<string, int> ARG_ID_MAP = new Dictionary<string, int> {
@@ -9,7 +9,7 @@ namespace aoc_2020 {
 		};
 		
 		private static readonly Dictionary<string, Type> PUZZLE_MAP = new Dictionary<string, Type> {
-			{"p1a", typeof(Puzzle_1a)},
+			{"D01", typeof(D01.Puzzle)},
 		};
 		
 		private static void Main(string[] pArgs) {
@@ -18,7 +18,7 @@ namespace aoc_2020 {
 				return;
 			}
 
-			Puzzle puzzleInstance = InstantiatePuzzle(puzzleId);
+			BasePuzzle puzzleInstance = InstantiatePuzzle(puzzleId);
 
 			if(puzzleInstance == null) {
 				Console.WriteLine($"Invalid puzzleId: {puzzleId}");
@@ -29,11 +29,11 @@ namespace aoc_2020 {
 			puzzleInstance.Execute();
 		}
 
-		private static Puzzle InstantiatePuzzle(string pPuzzleId) {
+		private static BasePuzzle InstantiatePuzzle(string pPuzzleId) {
 			if(!PUZZLE_MAP.ContainsKey(pPuzzleId)) {
 				return null;
 			}
-			return (Puzzle)Activator.CreateInstance(PUZZLE_MAP[pPuzzleId]);
+			return (BasePuzzle)Activator.CreateInstance(PUZZLE_MAP[pPuzzleId]);
 		}
 
 		private static bool GetArg<T>(string pArgId, IReadOnlyList<string> pArgs, out T pOut) {
