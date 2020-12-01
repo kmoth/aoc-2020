@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AoC.D01 {
+namespace AoC.D04 {
 	public class Puzzle : BasePuzzle {
 		
 		public override void Execute() {

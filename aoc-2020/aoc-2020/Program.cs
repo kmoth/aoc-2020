@@ -8,10 +8,6 @@ namespace AoC {
 			{"puzzleId", 0},
 		};
 		
-		private static readonly Dictionary<string, Type> PUZZLE_MAP = new Dictionary<string, Type> {
-			{"D01", typeof(D01.Puzzle)},
-		};
-		
 		private static void Main(string[] pArgs) {
 			if(!GetArg("puzzleId", pArgs, out string puzzleId)) {
 				Console.WriteLine($"Invalid argument value for 'puzzleId'");
@@ -30,10 +26,15 @@ namespace AoC {
 		}
 
 		private static BasePuzzle InstantiatePuzzle(string pPuzzleId) {
-			if(!PUZZLE_MAP.ContainsKey(pPuzzleId)) {
+			Type type = Type.GetType($"AoC.{pPuzzleId}.Puzzle");
+			
+			if(type == null) {
 				return null;
 			}
-			return (BasePuzzle)Activator.CreateInstance(PUZZLE_MAP[pPuzzleId]);
+			
+			BasePuzzle puzzle = (BasePuzzle)Activator.CreateInstance(type);
+
+			return puzzle;
 		}
 
 		private static bool GetArg<T>(string pArgId, IReadOnlyList<string> pArgs, out T pOut) {
