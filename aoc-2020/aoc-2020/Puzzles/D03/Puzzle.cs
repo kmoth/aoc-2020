@@ -8,7 +8,7 @@ namespace AoC.D03 {
 		private List<string> _lines;
 		private int _lineLength;
 
-		private readonly Dictionary<char,int> _charValue = new Dictionary<char,int> {
+		private readonly Dictionary<char,uint> _charValue = new Dictionary<char,uint> {
 			{'#',1},
 			{'.',0}
 		};
@@ -22,7 +22,7 @@ namespace AoC.D03 {
 		}
 
 		private void PartOne() {
-			int treesFound = GetTreesAlongSlope(3, 1);
+			long treesFound = GetTreesAlongSlope(3, 1);
 			Console.WriteLine($"tree count: {treesFound}");
 		}
 
@@ -45,15 +45,13 @@ namespace AoC.D03 {
 			Console.WriteLine($"product: {product}");
 		}
 
-		private int GetTreesAlongSlope(int pX, int pY) {
+		private uint GetTreesAlongSlope(int pX, int pY) {
 			int lastX = pX;
-			int treeCount = 0;
+			uint treeCount = 0;
 			for(int y = pY; y < _lines.Count; y += pY) {
 				treeCount += _charValue[_lines[y][lastX]];
 				lastX += pX;
-				if(lastX >= _lineLength) {
-					lastX -= _lineLength;
-				}
+				lastX %= _lineLength;
 			}
 			return treeCount;
 		}
