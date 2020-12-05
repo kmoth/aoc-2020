@@ -4,20 +4,20 @@ using System.Linq;
 
 namespace AoC.D02 {
 	public class Puzzle : BasePuzzle {
-		
-		public override void Execute() {
-			List<CorruptedPassword> convertedInput = Input.Select(
-				pInput => new CorruptedPassword(pInput)).ToList();
-			
-			int validPasswordCount = convertedInput.Count(
-				ValidatePasswordPart1);
-			
-			Console.WriteLine($"validPasswordCount: {validPasswordCount}");
-			
-			validPasswordCount = convertedInput.Count(
-				ValidatePasswordPart2);
 
-			Console.WriteLine($"validPasswordCount: {validPasswordCount}");
+		private readonly List<CorruptedPassword> _convertedInput;
+
+		public Puzzle() {
+			_convertedInput = LoadInputLines().Select(pInput => 
+				new CorruptedPassword(pInput)).ToList();
+		}
+		
+		public override string SolvePartOne() {
+			return _convertedInput.Count(ValidatePasswordPart1).ToString();
+		}
+		
+		public override string SolvePartTwo() {
+			return _convertedInput.Count(ValidatePasswordPart2).ToString();
 		}
 
 		private static bool ValidatePasswordPart1(CorruptedPassword pCorruptedPassword) {
@@ -32,9 +32,6 @@ namespace AoC.D02 {
 			char char1 = SafelyGetChar(pCorruptedPassword.Password, pCorruptedPassword.Min);
 			char char2 = SafelyGetChar(pCorruptedPassword.Password, pCorruptedPassword.Max);
 			bool isValid = char1 == pCorruptedPassword.Character ^ char2 == pCorruptedPassword.Character;
-			if(isValid) {
-				
-			}
 			Console.WriteLine($"{isValid} - {pCorruptedPassword}, 1={char1}, 2={char2}");
 			return isValid;
 		}

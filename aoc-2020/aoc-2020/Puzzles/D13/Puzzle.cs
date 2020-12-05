@@ -1,8 +1,17 @@
 namespace AoC.D13 {
 	public class Puzzle : BasePuzzle {
 		
-		public override void Execute() {
-			
+		public Puzzle() {
+			// _convertedInput = LoadInputLines().ToList();
 		}
+		
+		public override string SolvePartOne() {
+			return "INCOMPLETE";
+		}
+		
+		public override string SolvePartTwo() {
+			return "INCOMPLETE";
+		}
+		
 	}
 }

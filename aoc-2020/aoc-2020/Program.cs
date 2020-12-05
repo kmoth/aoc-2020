@@ -22,7 +22,12 @@ namespace AoC {
 			}
 			
 			Console.WriteLine($"Execute Puzzle: {puzzleId}");
-			puzzleInstance.Execute();
+			
+			string partOneResult = puzzleInstance.SolvePartOne();
+			Console.WriteLine($"Part One: {partOneResult}");
+			
+			string partTwoResult = puzzleInstance.SolvePartTwo();
+			Console.WriteLine($"Part Two: {partTwoResult}");
 		}
 
 		private static BasePuzzle InstantiatePuzzle(string pPuzzleId) {

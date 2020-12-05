@@ -1,20 +1,24 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace AoC.D01 {
 	public class Puzzle : BasePuzzle {
-		
-		public override void Execute() {
-			List<int> convertedInput = Input.Select(int.Parse).ToList();
-			int result = FindPair(convertedInput, 2020);
-			Console.WriteLine($"result: {result}");
 
-			result = FindTrio(convertedInput, 2020);
-			Console.WriteLine($"result: {result}");
+		private readonly List<int> _convertedInput;
+
+		public Puzzle() {
+			_convertedInput = LoadInputLines().Select(int.Parse).ToList();
+		}
+
+		public override string SolvePartOne() {
+			return FindPair(_convertedInput, 2020).ToString();
 		}
 		
-		private int FindPair(List<int> pInputs, int pMatchSum) {
+		public override string SolvePartTwo() {
+			return FindTrio(_convertedInput, 2020).ToString();
+		}
+		
+		private static int FindPair(IReadOnlyCollection<int> pInputs, int pMatchSum) {
 			foreach(int inputA in pInputs) {
 				foreach(int inputB in pInputs) {
 					if(inputA + inputB == pMatchSum) {
@@ -26,7 +30,7 @@ namespace AoC.D01 {
 			return -1;
 		}
 		
-		private int FindTrio(List<int> pInputs, int pMatchSum) {
+		private static int FindTrio(IReadOnlyCollection<int> pInputs, int pMatchSum) {
 			foreach(int inputA in pInputs) {
 				foreach(int inputB in pInputs) {
 					foreach(int inputC in pInputs) {

@@ -8,17 +8,15 @@ namespace AoC {
 	public abstract class BasePuzzle {
 
 		private const string BASE_PATH = "/Users/kelseymott/work/aoc-2020/aoc-2020/aoc-2020/Puzzles";
-		
-		protected int Day { get; }
-		
-		protected IEnumerable<string> Input { get; }
 
+		private int Day { get; }
+		
 		protected BasePuzzle() {
 			Day = ParseDay();
-			Input = LoadInput();
 		}
 
-		public abstract void Execute();
+		public abstract string SolvePartOne();
+		public abstract string SolvePartTwo();
 
 		private int ParseDay() {
 			string fullName = GetType().FullName ?? "";
@@ -27,8 +25,10 @@ namespace AoC {
 			return int.Parse(match.Groups[1].Value);
 		}
 
-		private IEnumerable<string> LoadInput() {
-			string inputFilePath = GetFilePath("input.txt");
+		protected IEnumerable<string> LoadInputLines(bool pLoadTestInput = false) {
+			string inputFilePath = GetFilePath(pLoadTestInput 
+				? "input_test.txt" 
+				: "input.txt");
 			
 			if(!File.Exists(inputFilePath)) {
 				Console.WriteLine($"Input Not Loaded: {inputFilePath}");

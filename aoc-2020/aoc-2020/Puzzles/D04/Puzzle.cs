@@ -6,15 +6,17 @@ using System.Text.RegularExpressions;
 
 namespace AoC.D04 {
 	public class Puzzle : BasePuzzle {
-		
-		public override void Execute() {
-			List<Passport> passports = new List<Passport>();
+
+		private List<Passport> _passports;
+
+		public Puzzle() {
+			_passports = new List<Passport>();
 			Passport passport = new Passport();
 			StringBuilder passportData = new StringBuilder();
-			foreach(string line in Input) {
+			foreach(string line in LoadInputLines()) {
 				if(string.IsNullOrWhiteSpace(line)) {
 					passport.Parse(passportData.ToString());
-					passports.Add(passport);
+					_passports.Add(passport);
 					passportData.Clear();
 					passport = new Passport();
 					continue;
@@ -24,16 +26,23 @@ namespace AoC.D04 {
 			}
 			
 			passport.Parse(passportData.ToString());
-			passports.Add(passport);
-			
-			Console.WriteLine($"Passports found: {passports.Count}");
-
-			int validPassports = ValidatePassports(passports);
-			Console.WriteLine($"valid passports: {validPassports}");
+			_passports.Add(passport);
+		}
+		
+		public override string SolvePartOne() {
+			return ValidatePassportsPartOne(_passports).ToString();
 		}
 
-		private int ValidatePassports(List<Passport> pPassports) {
-			return pPassports.Count(pPassport => pPassport.IsValid);
+		public override string SolvePartTwo() {
+			return ValidatePassportsPartTwo(_passports).ToString();
+		}
+
+		private int ValidatePassportsPartOne(IEnumerable<Passport> pPassports) {
+			return pPassports.Count(pPassport => pPassport.HasRequiredCreds);
+		}
+		
+		private int ValidatePassportsPartTwo(IEnumerable<Passport> pPassports) {
+			return pPassports.Count(pPassport => pPassport.AreRequiredCredsValid);
 		}
 
 	}
@@ -41,19 +50,24 @@ namespace AoC.D04 {
 	public struct Passport {
 
 		private int _validCreds;
+		private int _foundCreds;
 		private int _requiredCreds;
 
-		public bool IsValid { get; private set; }
+		public bool HasRequiredCreds { get; private set; }
+		
+		public bool AreRequiredCredsValid { get; private set; }
 
 		public void Parse(string pRawData) {
 			string[] creds = pRawData.Split(' ');
 			_validCreds = 0;
+			_foundCreds = 0;
 			_requiredCreds = 7;
 			foreach(string cred in creds) {
 				ParseCred(cred);
 			}
 
-			IsValid = _validCreds == _requiredCreds;
+			HasRequiredCreds = _foundCreds == _requiredCreds;
+			AreRequiredCredsValid = _validCreds == _requiredCreds;
 		}
 
 		private void ParseCred(string pCred) {
@@ -61,24 +75,31 @@ namespace AoC.D04 {
 			switch(credPair[0]) {
 				case "byr":
 					ValidateByr(credPair[1]);
+					_foundCreds++;
 					break;
 				case "iyr":
 					ValidateIyr(credPair[1]);
+					_foundCreds++;
 					break;
 				case "eyr":
 					ValidateEyr(credPair[1]);
+					_foundCreds++;
 					break;
 				case "hgt":
 					ValidateHgt(credPair[1]);
+					_foundCreds++;
 					break;
 				case "hcl":
 					ValidateHcl(credPair[1]);
+					_foundCreds++;
 					break;
 				case "ecl":
 					ValidateEcl(credPair[1]);
+					_foundCreds++;
 					break;
 				case "pid":
 					ValidatePid(credPair[1]);
+					_foundCreds++;
 					break;
 			}
 		}
