@@ -37,33 +37,38 @@ namespace AoC.D05 {
 		public Puzzle() {
 			_convertedInput = LoadInputLines().ToList();
 		}
-		
+
+		private (int min, int max) _seatRange;
+		private readonly Dictionary<int, string> _seatIds = new Dictionary<int, string>();
+
 		public override string SolvePartOne() {
-			Dictionary<int,string> seatIds = new Dictionary<int,string>();
+			_seatIds.Clear();
 			List<int> seats = new List<int>();
-			(int min, int max) = (int.MaxValue, int.MinValue);
+			_seatRange = (int.MaxValue, int.MinValue);
 			foreach(string boardingPass in _convertedInput) {
 				int seatId = GetSeatID(boardingPass);
-				seatIds.Add(seatId, boardingPass);
+				_seatIds.Add(seatId, boardingPass);
 				seats.Add(seatId);
-				min = Math.Min(min, seatId);
-				max = Math.Max(max, seatId);
+				_seatRange.min = Math.Min(_seatRange.min, seatId);
+				_seatRange.max = Math.Max(_seatRange.max, seatId);
 			}
+			seats.Sort();
 
-			int currentIndex = max;
+			
+			return seats.Last().ToString();
+		}
+		
+		public override string SolvePartTwo() {
+			int currentIndex = _seatRange.max;
 			List<int> seatIdsOfInterest = new List<int>();
-			while(currentIndex >= min) {
-				if(!seatIds.ContainsKey(currentIndex)) {
+			while(currentIndex >= _seatRange.min) {
+				if(!_seatIds.ContainsKey(currentIndex)) {
 					seatIdsOfInterest.Add(currentIndex);
 				}
 				--currentIndex;
 			}
 			
 			return seatIdsOfInterest.First().ToString();
-		}
-		
-		public override string SolvePartTwo() {
-			return "INCOMPLETE";
 		}
 
 		private int GetSeatID(string pBoardingPass) {
