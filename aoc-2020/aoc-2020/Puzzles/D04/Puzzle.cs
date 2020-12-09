@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace AoC.D04 {
 	public class Puzzle : BasePuzzle {
 
-		private List<Passport> _passports;
+		private readonly List<Passport> _passports;
 
 		public Puzzle() {
 			_passports = new List<Passport>();
@@ -21,7 +21,6 @@ namespace AoC.D04 {
 					passport = new Passport();
 					continue;
 				}
-				
 				passportData.Append($"{line} ");
 			}
 			
