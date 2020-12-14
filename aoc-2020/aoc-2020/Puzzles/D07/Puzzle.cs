@@ -25,8 +25,7 @@ namespace AoC.D07 {
 
 		public override string SolvePartTwo() {
 			Bag bag = _bags["shiny_gold"];
-			FindAllThatCanFitInTheShinyGold(bag);
-			return bag.GetRequiredBags().ToString();
+			return bag.GetTotalBags(_bags).ToString();
 		}
 		
 		private void FindAllThatCanHoldTheShinyGold(string pBagName, IDictionary<string, Bag> pBags) {
@@ -37,13 +36,7 @@ namespace AoC.D07 {
 				FindAllThatCanHoldTheShinyGold(bag.Name, pBags);
 			}
 		}
-		
-		private void FindAllThatCanFitInTheShinyGold(Bag pBag) {
-			foreach(string bagBag in pBag.Bags) {
-				FindAllThatCanFitInTheShinyGold(_bags[bagBag]);
-			}
-		}
-		
+
 	}
 
 	public class Bag {
@@ -51,33 +44,34 @@ namespace AoC.D07 {
 		private readonly string[] _words;
 		public string Name { get; }
 
-		public List<string> Bags => _rules.Keys.ToList();
-
-		private readonly Dictionary<string, int> _rules;
+		private readonly Dictionary<string, int> _bags;
 		
 		public Bag(string pRawData) {
-			_rules = new Dictionary<string, int>();
+			_bags = new Dictionary<string, int>();
 			_words = pRawData.Split(' ');
 			Name = $"{_words[0]}_{_words[1]}";
 			ParseContentRules(_words);
 		}
 
-		private void ParseContentRules(string[] pWords) {
+		private void ParseContentRules(IReadOnlyList<string> pWords) {
 			int bagCountIndex = 4;
-			if(int.TryParse(pWords[bagCountIndex], out int bagCount)) {
-				string name = $"{pWords[bagCountIndex + 1]}_{pWords[bagCountIndex + 2]}";
-				_rules.Add(name, bagCount);
-				bagCountIndex = 8;
-				for(int index = bagCountIndex; index < pWords.Length; index += 4) {
-					name = $"{pWords[index + 1]}_{pWords[index + 2]}";
-					_rules.Add(name, int.Parse(pWords[bagCountIndex]));
-				}
+			
+			if(!int.TryParse(pWords[bagCountIndex], out int bagCount)) {
+				return;
+			}
+
+			string name = $"{pWords[bagCountIndex + 1]}_{pWords[bagCountIndex + 2]}";
+			_bags.Add(name, bagCount);
+			
+			for(int index = 8; index < pWords.Count; index += 4) {
+				name = $"{pWords[index + 1]}_{pWords[index + 2]}";
+				_bags.Add(name, int.Parse(pWords[index]));
 			}
 		}
 
 		public override string ToString() {
 			StringBuilder stringBuilder = new StringBuilder();
-			foreach((string name, int count) in _rules) {
+			foreach((string name, int count) in _bags) {
 				stringBuilder.Append($"[{count} {name}]");
 			}
 			return $"({Name}) {stringBuilder}";
@@ -85,11 +79,20 @@ namespace AoC.D07 {
 
 
 		public bool CanHold(string pBagName) {
-			return _rules.ContainsKey(pBagName);
+			return _bags.ContainsKey(pBagName);
 		}
 
-		public int GetRequiredBags() {
-			return 0;
+		public int GetTotalBags(Dictionary<string,Bag> pBags) {
+			int bagTotal = 0;
+
+			foreach((string bagName, int bagCount) in _bags) {
+				if(bagCount == 0) {
+					Console.WriteLine(bagName);
+				}
+				bagTotal += bagCount + pBags[bagName].GetTotalBags(pBags) * bagCount;
+			}
+			
+			return bagTotal;
 		}
 
 	}
